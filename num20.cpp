@@ -58,6 +58,11 @@ int find_optimal_pos(int n, int nums[])
         return -1;
     }
 
+    if (n == aval)
+    {
+        return apos + 1;
+    }
+
     apos++;
     aval++;
 

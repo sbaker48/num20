@@ -49,6 +49,7 @@ int find_optimal_pos(int n, int nums[])
             {
                 bpos = i;
                 bval = nums[i];
+				break;
             }
         }
     }

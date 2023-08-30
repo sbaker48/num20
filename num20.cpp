@@ -1,5 +1,6 @@
 #include <iostream>
 #include <time.h>
+#include <stdint.h>
 
 int get_num()
 {
@@ -27,7 +28,7 @@ void print_nums(int nums[])
 int find_optimal_pos(int n, int nums[])
 {
     int apos = -1;
-    int aval = -1;
+    int aval = 0;
 
     int bpos = 20;
     int bval = 1000;
@@ -58,17 +59,11 @@ int find_optimal_pos(int n, int nums[])
         return -1;
     }
 
-    if (n == aval)
-    {
-        return apos + 1;
-    }
-
     apos++;
-    aval++;
 
-    // calculate a value in the range of [a,b)
+    // calculate a value in the range of [apos,bpos)
     
-    int npos = ((n - aval) * (bpos - apos) / (bval - aval)) + apos;
+    int npos = (((n - aval) * (bpos - apos)) / (bval - aval)) + apos;
     return npos;
 }
 
@@ -83,7 +78,7 @@ int run_game()
 
    for (int i = 0; i < 20; i++)
    {
-      int n = get_num();
+      int32_t n = get_num();
       int p = find_optimal_pos(n, nums);
       if (p >= 0 && p < 20)
       {
@@ -91,42 +86,46 @@ int run_game()
       }
       else
       {
-	  //std::cout << i << "  " << n << "        ";
+          //std::cout << i << "  " << n << "        ";
           //print_nums(nums);
           return i;
       }
    }
 
-
     //print_nums(nums);
     return 20;
 }
 
-
-
 int main()
 {
-    int trials = 0;
-    int failcount = 0;
-    int successcount = 0;
+    uint32_t trials = 0;
+	uint32_t t0;
+	
+    uint32_t failcount = 0;
+    uint32_t successcount = 0;
 
     srand(time(NULL));
 
-    while (trials < 1000000)
-    {
-	trials++;
-        int res = run_game();
-	if (res == 20)
+    while (trials < 1000000000)
 	{
-	    successcount++;
-	}
-	else
-	{
-  	    failcount++;
-	}
+	    for (t0 = 0; t0 < 1000000; t0++)
+	    {
+            trials++;
+            int res = run_game();
+            if (res == 20)
+            {
+                successcount++;
+            }
+            else
+            {
+                failcount++;
+            }
+		}
+		float rate = successcount;
+		rate /= failcount;
+		rate *= 100.0;
+		std::cout << rate << std::endl;
     }
-
-    std::cout << successcount << " out of " << trials << std::endl;
 
     return 0;
 }
